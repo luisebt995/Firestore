@@ -8,6 +8,11 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import com.google.android.gms.ads.AdListener
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.MobileAds
 
 //Monetizacion a traves de Ads
 import com.google.firebase.Firebase
@@ -15,7 +20,9 @@ import com.google.firebase.firestore.firestore
 
 class MainActivity : AppCompatActivity() {
     private final var TAG = "MainActivity"
+
     private lateinit var anuncioPop : Anuncios
+
     private lateinit var editNombre : EditText
     private lateinit var editApellido : EditText
     private lateinit var editEmail : EditText
@@ -25,11 +32,54 @@ class MainActivity : AppCompatActivity() {
     private lateinit var btnFirestoreReadApellido : Button
     private lateinit var btnFirestoreDelete : Button
     private lateinit var txtResults : TextView
+
     private val dbf = Firebase.firestore
+    lateinit var mAdView : AdView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        MobileAds.initialize(this) {}
+
+        mAdView = findViewById(R.id.adView)
+        val adRequest = AdRequest.Builder().build()
+        mAdView.loadAd(adRequest)
+
+        mAdView.adListener = object: AdListener() {
+            override fun onAdClicked() {
+                // Code to be executed when the user clicks on an ad.
+                Log.d(TAG, "Ad was clicked.")
+            }
+
+            override fun onAdClosed() {
+                // Code to be executed when the user is about to return
+                // to the app after tapping on an ad.
+                Log.d(TAG, "Ad was closed.")
+            }
+
+            override fun onAdFailedToLoad(adError : LoadAdError) {
+                // Code to be executed when an ad request fails.
+                Log.d(TAG, "Ad failed to load.")
+            }
+
+            override fun onAdImpression() {
+                // Code to be executed when an impression is recorded
+                // for an ad.
+                Log.d(TAG, "Ad recorded an impression.")
+            }
+
+            override fun onAdLoaded() {
+                // Code to be executed when an ad finishes loading.
+                Log.d(TAG, "Ad was loaded.")
+            }
+
+            override fun onAdOpened() {
+                // Code to be executed when an ad opens an overlay that
+                // covers the screen.
+                Log.d(TAG, "Ad was opened.")
+            }
+        }
 
         editNombre = findViewById(R.id.editTextNombre)
         editApellido = findViewById(R.id.editTextApellido)
