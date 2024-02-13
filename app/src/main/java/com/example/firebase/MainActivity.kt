@@ -1,0 +1,143 @@
+package com.example.firebase
+
+import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
+import android.util.Log
+import android.view.View
+import android.widget.Button
+import android.widget.EditText
+import android.widget.TextView
+import android.widget.Toast
+
+//Monetizacion a traves de Ads
+import com.google.firebase.Firebase
+import com.google.firebase.firestore.firestore
+
+class MainActivity : AppCompatActivity() {
+    private final var TAG = "MainActivity"
+    private lateinit var anuncioPop : Anuncios
+    private lateinit var editNombre : EditText
+    private lateinit var editApellido : EditText
+    private lateinit var editEmail : EditText
+    private lateinit var btnFirestoreSave : Button
+    private lateinit var btnFirestoreRead : Button
+    private lateinit var btnFirestoreReadEmail : Button
+    private lateinit var btnFirestoreReadApellido : Button
+    private lateinit var btnFirestoreDelete : Button
+    private lateinit var txtResults : TextView
+    private val dbf = Firebase.firestore
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
+        editNombre = findViewById(R.id.editTextNombre)
+        editApellido = findViewById(R.id.editTextApellido)
+        editEmail = findViewById(R.id.editTextEmail)
+        btnFirestoreSave = findViewById(R.id.btnFirestoreSave)
+        btnFirestoreRead = findViewById(R.id.btnFirestoreRead)
+        btnFirestoreReadEmail = findViewById(R.id.btnFirestoreReadEmail)
+        btnFirestoreReadApellido = findViewById(R.id.btnFirestoreReadApellido)
+        btnFirestoreDelete = findViewById(R.id.btnFirestoreDelete)
+        txtResults = findViewById(R.id.txtResults)
+
+        anuncioPop = Anuncios(this,TAG)
+
+        btnFirestoreSave.setOnClickListener {
+            saveFirestore()
+        }
+
+        btnFirestoreRead.setOnClickListener {
+            readFirestore()
+        }
+
+        btnFirestoreReadEmail.setOnClickListener {
+            readFirestoreEmail()
+        }
+
+        btnFirestoreReadApellido.setOnClickListener {
+            readFirestoreApellido()
+        }
+
+        btnFirestoreDelete.setOnClickListener {
+            deleteFirestore()
+        }
+    }
+
+    fun loadAd(view: View) {
+        anuncioPop.loadAd()
+    }
+
+    fun showAd(view: View) {
+        anuncioPop.mostrarAd()
+    }
+
+    private fun saveFirestore() {
+        val user = hashMapOf(
+            "Nombre" to editNombre.text.toString(),
+            "Apellido" to editApellido.text.toString()
+        )
+        dbf.collection("Usuarios")
+            .document(editEmail.text.toString())
+            .set(user)
+            .addOnSuccessListener {
+                //Log.d(TAG, "DocumentSnapshot added with Email: ${editEmail.text.toString()}")
+                Toast.makeText(this, "DocumentSnapshot added with Email: ${editEmail.text.toString()}", Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener { e ->
+                //Log.w(TAG, "Error adding document", e)
+                Toast.makeText(this, "Error adding document", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    private fun readFirestore () {
+        txtResults.text=""
+        dbf.collection("Usuarios")
+            .get()
+            .addOnSuccessListener { result ->
+                for (name in result) {
+                    txtResults.text = "${txtResults.text} ${name.id} => ${name.data}\n"
+                    //Log.d(TAG, "${name.id} => ${name.data}")
+                }
+            }
+    }
+
+    private fun readFirestoreEmail() {
+        val email = editEmail.text.toString().trim()
+        if (email.isNotEmpty())
+        //Muestro en los mismos EditText, el nombre y la provincia del email que introduzca
+            dbf.collection("Usuarios")
+                .document(email)
+                .get()
+                .addOnSuccessListener {
+                    editNombre.setText(it.get("Nombre") as String?)
+                    editApellido.setText(it.get("Apellido") as String?)
+            }
+    }
+
+    private fun readFirestoreApellido() {
+        txtResults.text=""
+        val apellido = editApellido.text.toString().trim()
+
+        if(apellido.isNotEmpty()) {
+            dbf.collection("Usuarios")
+                .whereEqualTo("Apellido", apellido)
+                .get()
+                .addOnSuccessListener { result ->
+                    for (document in result) {
+                        val nm = document.getString("Nombre") ?: ""
+                        val ap = document.getString("Apellido") ?: ""
+                        val em = document.id //Para consultar el ID único, en este caso, el email.
+
+                        txtResults.text = "${txtResults.text} NOMBRE: $nm -- APELLIDO: $ap -- EMAIL: $em \n"
+                    }
+                }
+        }
+    }
+
+    private fun deleteFirestore() {
+        dbf.collection("Usuarios")
+            .document(editEmail.text.toString().trim())
+            .delete()
+    }
+}

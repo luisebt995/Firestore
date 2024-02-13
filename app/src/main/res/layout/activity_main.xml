@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="loadAd"
+            android:text="Cargar Publicidad" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="showAd"
+            android:text="Mostrar Publicidad" />
+
+        <EditText
+            android:id="@+id/editTextNombre"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Nombre"
+            android:inputType="text" />
+
+        <EditText
+            android:id="@+id/editTextApellido"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Apellido"
+            android:inputType="text" />
+
+        <EditText
+            android:id="@+id/editTextEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Email"
+            android:inputType="text" />
+
+        <Button
+            android:id="@+id/btnFirestoreSave"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Guardar Registro" />
+
+        <Button
+            android:id="@+id/btnFirestoreRead"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Revisar Datos" />
+
+        <Button
+            android:id="@+id/btnFirestoreReadEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Revisar Email" />
+
+        <Button
+            android:id="@+id/btnFirestoreReadApellido"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Revisar Apellido" />
+
+        <Button
+            android:id="@+id/btnFirestoreDelete"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Eliminar Registro " />
+
+        <TextView
+            android:id="@+id/txtResults"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
